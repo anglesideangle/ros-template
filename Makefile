@@ -1,4 +1,4 @@
-.PHONY: all update-submodules dev build final refresh clean
+.PHONY: all update-submodules dev build test final refresh clean
 .DEFAULT_GOAL := all
 
 # TODO Configure these
@@ -53,6 +53,16 @@ build: $(BASE_BUILT)
 	  --name=$(REPO_NAME)-build \
 	  $(BASE_IMAGE) \
 	  colcon build --symlink-install
+
+test: $(BASE_BUILT)
+	@echo "==> Testing colcon workspace..."
+	@$(CONTAINER_ENGINE) run \
+	  --rm \
+	  --volume=./:/workspace/:rw \
+	  --workdir=/workspace \
+	  --name=$(REPO_NAME)-test \
+	  $(BASE_IMAGE) \
+	  colcon test
 
 final: $(FINAL_BUILT)
 

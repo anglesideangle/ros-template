@@ -5,8 +5,9 @@ This repository is a template for a containerized [ROS 2](https://docs.ros.org/)
 | Command                  | Description                                                                                                                   |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | `make build`             | Builds the colcon workspace.                                                                                                  |
+| `make test`              | Tests the colcon workspace.                                                                                                   |
 | `make dev`               | Enters a bash shell inside the container containing the project's dependencies and build environment.                         |
-| `make final`             | Builds the colcon workspace and copies the resulting artifacts into a minimal `ros-core` image tagged `{name}:latest-final`. |
+| `make final`             | Builds the colcon workspace and copies the resulting artifacts into a minimal `ros-core` image tagged `{name}:latest-final`.  |
 | `make refresh`           | Causes the previous set of commands to rebuild the image when run.                                                            |
 | `make clean`             | Untags and removes any installed images.                                                                                      |
 | `make update-submodules` | Recursively updates git submodules.                                                                                           |
@@ -29,7 +30,7 @@ This template project acts as the ros/colcon workspace, with all packages to be 
 
 Where `{name}` is to be replaced with your project's name.
 
-Make commands that rely on a specific image existing (`make build`, `make dev`) will build the image first if it does not already exist. Afterwards, they will only rebuild the image if changes have been made to the `Containerfile`, or if they are forced to rebuild (`make refresh`, `make clean`). Since the images share most of the same layers, only your first command should take long, and the rest should be relatively quick. `make build` will also mount your entire project into `/workspace`, meaning build artifacts (`build`, `install`, `log`) are cached by default.
+Make commands that rely on a specific image existing (`make build`, `make test`, `make dev`) will build the image first if it does not already exist. Afterwards, they will only rebuild the image if changes have been made to the `Containerfile`, or if they are forced to rebuild (`make refresh`, `make clean`). Since the images share most of the same layers, only your first command should take long, and the rest should be relatively quick. `make build` will also mount your entire project into `/workspace`, meaning build artifacts (`build`, `install`, `log`) are cached by default.
 
 `make dev` will, by default, bridge the following between the host and container:
 
