@@ -2,28 +2,35 @@
 .DEFAULT_GOAL := all
 
 # TODO Configure these
-ROS_DISTRO := rolling
-REPO_NAME := ros-template
+ROS_DISTRO ?= kilted
+REPO_NAME ?= ros-template
 
 CONTAINERFILE := Containerfile
 CONTAINER_ENGINE := docker
 
+# Tag names
+# These are dependent on the distro, meaning changing distro will cause a rebuild
+BASE_TAG := $(ROS_DISTRO)-base
+DEV_TAG := $(ROS_DISTRO)-dev
+FINAL_TAG := $(ROS_DISTRO)-final
+
 # Image names
-BASE_IMAGE := $(REPO_NAME):latest-base
-DEV_IMAGE := $(REPO_NAME):latest-dev
-FINAL_IMAGE := $(REPO_NAME):latest-final
+BASE_IMAGE := $(REPO_NAME):$(BASE_TAG)
+DEV_IMAGE := $(REPO_NAME):$(DEV_TAG)
+FINAL_IMAGE := $(REPO_NAME):$(FINAL_TAG)
 
 # Marker files
+# These are used by `build`, `test`, `dev`, and `final` commands
+# to ensure rebuilds only happen when necessary
 MARKER_DIR := .make-markers
 BASE_BUILT := $(MARKER_DIR)/base.built
 DEV_BUILT := $(MARKER_DIR)/dev.built
 FINAL_BUILT := $(MARKER_DIR)/final.built
 
-# TARGETS
-
 all: final
 
 update-submodules:
+	@git submodule sync
 	@git submodule update --init --recursive
 
 dev: $(DEV_BUILT)
@@ -62,11 +69,11 @@ test: $(BASE_BUILT)
 	  --workdir=/workspace \
 	  --name=$(REPO_NAME)-test \
 	  $(BASE_IMAGE) \
-	  colcon test
+	  colcon test --event-handlers console_cohesion+
 
 final: $(FINAL_BUILT)
 
-$(BASE_BUILT): $(CONTAINERFILE)
+$(BASE_BUILT): $(CONTAINERFILE) $(MAKEFI)
 	@echo "==> Building base image..."
 	@$(CONTAINER_ENGINE) build \
 		-t $(BASE_IMAGE) \

@@ -2,15 +2,15 @@
 
 This repository is a template for a containerized [ROS 2](https://docs.ros.org/) project. It uses `make` to implement the following utility commands:
 
-| Command                  | Description                                                                                                                   |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| `make build`             | Builds the colcon workspace.                                                                                                  |
-| `make test`              | Tests the colcon workspace.                                                                                                   |
-| `make dev`               | Enters a bash shell inside the container containing the project's dependencies and build environment.                         |
-| `make final`             | Builds the colcon workspace and copies the resulting artifacts into a minimal `ros-core` image tagged `{name}:latest-final`.  |
-| `make refresh`           | Causes the previous set of commands to rebuild the image when run.                                                            |
-| `make clean`             | Untags and removes any installed images.                                                                                      |
-| `make update-submodules` | Recursively updates git submodules.                                                                                           |
+| Command                  | Description                                                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `make build`             | Builds the colcon workspace.                                                                                                   |
+| `make test`              | Tests the colcon workspace.                                                                                                    |
+| `make dev`               | Enters a bash shell inside the container containing the project's dependencies and build environment.                          |
+| `make final`             | Builds the colcon workspace and copies the resulting artifacts into a minimal `ros-core` image tagged `{name}:{distro}-final`. |
+| `make refresh`           | Causes the previous set of commands to rebuild the image when run.                                                             |
+| `make clean`             | Untags and removes any installed images.                                                                                       |
+| `make update-submodules` | Recursively updates git submodules.                                                                                            |
 
 ## Why?
 
@@ -24,9 +24,9 @@ This template project acts as the ros/colcon workspace, with all packages to be 
 
 `Containerfile` contains build instructions for several stages of a container build, which can be used independently. `Makefile` contains the afformentioned scripts for using the container image. The images produced by the makefile's commands are:
 
-- `{name}:latest-base` (for `make build`), extends `ros-{distro}-desktop-full`
-- `{name}:latest-dev` (for `make dev`), extends `base`
-- `{name}:latest-final` (for `make final`), extends `{distro}-ros-core`
+- `{name}:{distro}-base` (for `make build`), extends `ros-{distro}-desktop-full`
+- `{name}:{distro}-dev` (for `make dev`), extends `base`
+- `{name}:{distro}-final` (for `make final`), extends `{distro}-ros-core`
 
 Where `{name}` is to be replaced with your project's name.
 
@@ -57,7 +57,7 @@ To add source dependencies, use git submodules inside src. For example:
 git submodule add https://github.com/ros2/examples.git src/examples
 ```
 
-You can view submodules in `.gitmodules` and pin them to specific commits or branches by running `git checkout <commit/branch>` from the specific module's directory.
+You can edit submodules in `.gitmodules` and pin them to specific commits or branches, and refresh them with `make update-submodules`.
 
 ## Questions and Limitations
 

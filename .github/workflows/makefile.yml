@@ -14,11 +14,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Workspace Build
+    - name: Update Submodules
       run: make update-submodules
 
     - name: Workspace Build
       run: make build
 
+    # the ros2/examples repo has stderr output on most tests :)
+    # - name: Workspace Test
+    #   run: make test
+
     - name: Final Image
       run: make final
+

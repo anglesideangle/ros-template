@@ -5,7 +5,7 @@
       "target": "dev",
       "context": ".",
       "args": {
-          "ROS_DISTRO": "rolling",
+          "ROS_DISTRO": "kilted",
       }
   },
   "workspaceFolder": "/workspace",
