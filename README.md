@@ -40,7 +40,7 @@ Make commands that rely on a specific image existing (`make build`, `make dev`) 
 
 All the commands and syntax used is intended to be compatible with [podman](https://podman.io/), [docker](https://www.docker.com/), or any other OCI complaint container engine.
 
-## Using
+## Usage
 
 To set up the template, replace `ROS_DISTRO` and `REPO_NAME` in `Makefile` with your desired distro and project name. If you're using devcontainers, replace `ROS_DISTRO` in `./container/devcontainer.json` as well.
 
@@ -78,7 +78,7 @@ Back to the question: Use conda inside a container at your own risk... I heard t
 
 > I don't use VSCode with devcontainers. How can I edit files with language server support from within the container with \<insert my editor here\>?
 
-Ha.
+Ha
 
 This specific issue is very annoying. So annoying that I wrote a [blog post](https://anglesideangle.dev/blog/container-hell/) about it. In short, a fundamental flaw of container based development is that you, and any other contributors, will need to add their personal tooling to the `dev` stage in the containerfile, and not commit it or hope it doesn't conflict with other contributors'.
 
