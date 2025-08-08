@@ -2,12 +2,14 @@
 
 This repository is a template for a containerized [ROS 2](https://docs.ros.org/) project. It uses `make` to implement the following utility commands:
 
-- `make build` builds the colcon workspace
-- `make dev` enters a bash shell inside the container containing the project's dependencies and build environment
-- `make final` builds the colcon workspace and copies the resulting artifacts into a minimal `ros-core` image
-- `make refresh` causes the previous set of commands to rebuild the image when ran
-- `make clean` removes the installed image
-- `make update-submodules` updates git submodules
+| Command                  | Description                                                                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `make build`             | Builds the colcon workspace.                                                                                                  |
+| `make dev`               | Enters a bash shell inside the container containing the project's dependencies and build environment.                         |
+| `make final`             | Builds the colcon workspace and copies the resulting artifacts into a minimal `ros-core` image tagged `project:latest-final`. |
+| `make refresh`           | Causes the previous set of commands to rebuild the image when run.                                                            |
+| `make clean`             | Untags and removes any installed images.                                                                                      |
+| `make update-submodules` | Recursively updates git submodules.                                                                                           |
 
 ## Why?
 
@@ -68,11 +70,13 @@ RUN pip install a b c d ...
 
 > Great, but what if I have multiple packages with conflicting versions of dependencies?
 
-A constraint of this setup is that we are completely tied to one specific version of every ros and ubuntu package. Anything that doesn't fit those versions needs to be ported or can't be used. If the messiness of dependency management bothers you as much as it bothered me, you may want to check out the real solution to these problems, [nix](http://nix.dev/). I will refrain from shilling too hard, but there exists [nix-ros-overlay](https://github.com/lopsided98/nix-ros-overlay) to enable working with ros packages from nix. There is also [robostack](https://robostack.github.io/index.html), which is a possibly more mature solution that seeks to address similar problems for ros specifically.
+A constraint of this setup is that we are completely tied to one specific version of every ros and ubuntu package. Anything that doesn't fit those versions needs to be ported or can't be used.
+
+If the messiness of dependency management bothers you as much as it bothered me, you may want to check out the real solution to these problems, [nix](http://nix.dev/). I will refrain from shilling too hard, but there exists [nix-ros-overlay](https://github.com/lopsided98/nix-ros-overlay) to enable working with ros packages from nix. There is also [robostack](https://robostack.github.io/index.html), which is a possibly more mature solution that seeks to address similar problems for ros specifically.
 
 Back to the question: Use conda inside a container at your own risk... I heard the last person who did it was found years later in a shack in the woods.
 
-> I don't use VSCode with devcontainers. How can I edit files with language server support from within the container with <insert my editor here>?
+> I don't use VSCode with devcontainers. How can I edit files with language server support from within the container with \<insert my editor here\>?
 
 Ha.
 
