@@ -6,7 +6,7 @@ This repository is a template for a containerized [ROS 2](https://docs.ros.org/)
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | `make build`             | Builds the colcon workspace.                                                                                                  |
 | `make dev`               | Enters a bash shell inside the container containing the project's dependencies and build environment.                         |
-| `make final`             | Builds the colcon workspace and copies the resulting artifacts into a minimal `ros-core` image tagged `project:latest-final`. |
+| `make final`             | Builds the colcon workspace and copies the resulting artifacts into a minimal `ros-core` image tagged `{name}:latest-final`. |
 | `make refresh`           | Causes the previous set of commands to rebuild the image when run.                                                            |
 | `make clean`             | Untags and removes any installed images.                                                                                      |
 | `make update-submodules` | Recursively updates git submodules.                                                                                           |
@@ -65,7 +65,7 @@ You can view submodules in `.gitmodules` and pin them to specific commits or bra
 To add additonal dependencies via pip, for example, make a new `RUN` command below that looks something like:
 
 ```containerfile
-RUN pip install a b c d ...
+RUN pip install antigravity
 ```
 
 > Great, but what if I have multiple packages with conflicting versions of dependencies?
