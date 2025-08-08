@@ -1,15 +1,15 @@
 .PHONY: all update-submodules dev build final refresh clean
 .DEFAULT_GOAL := all
 
-# Configure these
+# TODO Configure these
 ROS_DISTRO := rolling
 REPO_NAME := ros-template
+
 CONTAINERFILE := container/Containerfile
 
 # Image names
 BASE_IMAGE := $(REPO_NAME):latest-base
 DEV_IMAGE := $(REPO_NAME):latest-dev
-BUILD_IMAGE := $(REPO_NAME):latest-build
 FINAL_IMAGE := $(REPO_NAME):latest-final
 
 # Marker files
@@ -30,7 +30,6 @@ dev: $(DEV_BUILT)
 	@docker run \
 	  --rm \
 	  --tty \
-	  --replace \
 	  --interactive \
 	  --volume=./:/workspace/:rw \
 	  --workdir=/workspace \

@@ -22,6 +22,7 @@ RUN apt-get update \
   ros-${ROS_DISTRO}-ament-cmake \ 
   ros-${ROS_DISTRO}-ament-cmake-core \ 
   ros-${ROS_DISTRO}-ament-cmake-python
+  # TODO add your dependencies here!
 
 # Set up the entrypoint
 RUN cat <<EOF > /entrypoint.bash
@@ -49,16 +50,19 @@ WORKDIR /workspace
 # Actually build package
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && colcon build
 
-# Clean up image by removing apt lists
-RUN rm -rf /var/lib/apt/lists/*
-
 # Start from mininal image for final
 FROM docker.io/library/ros:${ROS_DISTRO}-ros-core AS final
+
+# TODO uncomment this and add runtime dependencies
+# RUN apt-get update \
+#   && apt-get install -y --no-install-recommends \
+#     my-package
+#   && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /workspace/build /workspace/build
 COPY --from=build /workspace/install /workspace/install
 
-CMD [ "bash" ] # your command here!!
+CMD [ "bash" ] # TODO your command here!!
 
 # Dev environment with useful tools
 FROM base AS dev
