@@ -1,0 +1,109 @@
+# Ignore everything recursively
+*
+
+# Allow these top-level files
+!.gitignore
+!.gitmodules
+!Makefile
+!README.md
+
+# Allow these directories (contents still follow ignore rules above)
+!/container/
+!/container/**
+!/linux/
+!/linux/**
+!/src/
+!/src/**
+
+# ignore rosbags
+*.bag
+
+# -------- the great list of junk --------
+
+# macOS
+**/.DS_Store
+**/.AppleDouble
+**/.LSOverride
+**/.Spotlight-V100
+**/.Trashes
+**/.DocumentRevisions-V100
+**/.fseventsd
+**/.VolumeIcon.icns
+**/.AppleDesktop
+**/.AppleDB
+**/.AppleSave
+**/Icon?
+**/._*
+
+# Windows
+**/Thumbs.db
+**/ehthumbs.db
+**/Desktop.ini
+**/$RECYCLE.BIN/
+**/System Volume Information/
+
+# Linux (and Unix-like)
+**/.Trash-*
+**/.cache/
+**/.local/share/Trash/
+**/.*.swp
+**/.nfs*
+
+# Editors / IDEs
+**/.idea/
+**/.vscode/
+**/.vscode-test/
+**/.project
+**/.settings/
+**/.metadata/
+**/.classpath
+**/.cproject
+**/.factorypath
+**/.externalToolBuilders/
+**/.launches/
+**/.loadpath
+**/.mvn/
+**/.mvn/wrapper/
+**/.metadata/
+**/.recommenders/
+
+# JetBrains IDEs (IntelliJ, PyCharm, etc.)
+**/*.iml
+**/*.iws
+**/*.ipr
+
+# Visual Studio
+**/*.suo
+**/*.user
+**/*.userosscache
+**/*.sln.docstates
+
+# Node / JavaScript
+**/node_modules/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/.Python
+**/env/
+**/venv/
+**/ENV/
+**/env.bak/
+**/venv.bak/
+
+# Rust
+**/target/
+
+# Misc common
+**/.cache/
+**/.grunt/
+**/.sass-cache/
+**/.bundle/
+**/.jekyll-cache/
+**/.sass-cache/
+**/.tox/
+**/.pytest_cache/

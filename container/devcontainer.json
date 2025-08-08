@@ -1,0 +1,20 @@
+{
+  "name": "ROS Environment",
+  "build": {
+      "dockerfile": "Containerfile",
+      "target": "dev",
+      "context": ".",
+      "args": {
+          "ROS_DISTRO": "rolling",
+      }
+  },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "mounts": [],
+  "runArgs": [
+      "--net=host"
+  ],
+  "containerEnv": {
+      "SHELL": "/bin/bash"
+  }
+}
