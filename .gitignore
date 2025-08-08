@@ -1,13 +1,13 @@
 # Ignore everything recursively
 *
 
-# Allow these top-level files
 !.gitignore
 !.gitmodules
 !Makefile
+!Containerfile
+!.devcontainer.json
 !README.md
 
-# Allow these directories (contents still follow ignore rules above)
 !/container/
 !/container/**
 !/linux/

@@ -21,7 +21,7 @@ However, developing inside a containerized environment presents a very large pit
 
 This template project acts as the ros/colcon workspace, with all packages to be built going in `src`.
 
-`container/Containerfile` contains build instructions for several stages of a container build, which can be used independently. `Makefile` contains the afformentioned scripts for using the container image. The images produced by the makefile's commands are:
+`Containerfile` contains build instructions for several stages of a container build, which can be used independently. `Makefile` contains the afformentioned scripts for using the container image. The images produced by the makefile's commands are:
 
 - `{name}:latest-base` (for `make build`), extends `ros-{distro}-desktop-full`
 - `{name}:latest-dev` (for `make dev`), extends `base`

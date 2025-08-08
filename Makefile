@@ -5,7 +5,8 @@
 ROS_DISTRO := rolling
 REPO_NAME := ros-template
 
-CONTAINERFILE := container/Containerfile
+CONTAINERFILE := Containerfile
+CONTAINER_ENGINE := docker
 
 # Image names
 BASE_IMAGE := $(REPO_NAME):latest-base
@@ -27,7 +28,7 @@ update-submodules:
 
 dev: $(DEV_BUILT)
 	@echo "==> Entering workspace..."
-	@docker run \
+	@$(CONTAINER_ENGINE) run \
 	  --rm \
 	  --tty \
 	  --interactive \
@@ -45,7 +46,7 @@ dev: $(DEV_BUILT)
 
 build: $(BASE_BUILT)
 	@echo "==> Building colcon workspace..."
-	@docker run \
+	@$(CONTAINER_ENGINE) run \
 	  --rm \
 	  --volume=./:/workspace/:rw \
 	  --workdir=/workspace \
@@ -57,7 +58,7 @@ final: $(FINAL_BUILT)
 
 $(BASE_BUILT): $(CONTAINERFILE)
 	@echo "==> Building base image..."
-	@docker build \
+	@$(CONTAINER_ENGINE) build \
 		-t $(BASE_IMAGE) \
 		-f $(CONTAINERFILE) \
 		--target=base \
@@ -67,7 +68,7 @@ $(BASE_BUILT): $(CONTAINERFILE)
 
 $(DEV_BUILT): $(BASE_BUILT) $(CONTAINERFILE)
 	@echo "==> Building dev image..."
-	@docker build \
+	@$(CONTAINER_ENGINE) build \
 		-t $(DEV_IMAGE) \
 		-f $(CONTAINERFILE) \
 		--target=dev \
@@ -77,7 +78,7 @@ $(DEV_BUILT): $(BASE_BUILT) $(CONTAINERFILE)
 
 $(FINAL_BUILT): $(BASE_BUILT) $(CONTAINERFILE)
 	@echo "==> Building final image..."
-	@docker build \
+	@$(CONTAINER_ENGINE) build \
   	  -t $(BASE_IMAGE) \
   	  -f $(CONTAINERFILE) \
   	  --target=final \
@@ -91,6 +92,6 @@ refresh:
 
 clean:
 	@rm -rf $(MARKER_DIR)
-	-@docker rmi $(BASE_IMAGE) $(DEV_IMAGE) $(FINAL_IMAGE) 2>/dev/null
+	-@$(CONTAINER_ENGINE) rmi $(BASE_IMAGE) $(DEV_IMAGE) $(FINAL_IMAGE) 2>/dev/null
 	@echo "==> Removed build markers and deleted images..."
 
