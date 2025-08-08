@@ -14,9 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Update Submodules
-      run: make update-submodules
-
     - name: Workspace Build
       run: make build
 

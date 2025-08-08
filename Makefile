@@ -1,4 +1,4 @@
-.PHONY: all update-submodules dev build test final refresh clean
+.PHONY: all sync-submodules dev build test final refresh clean
 .DEFAULT_GOAL := all
 
 # TODO Configure these
@@ -29,11 +29,12 @@ FINAL_BUILT := $(MARKER_DIR)/final.built
 
 all: final
 
-update-submodules:
+sync-submodules:
+	@echo "==> Syncing submodules to .gitmodules..."
 	@git submodule sync
 	@git submodule update --init --recursive
 
-dev: $(DEV_BUILT)
+dev: $(DEV_BUILT) sync-submodules
 	@echo "==> Entering workspace..."
 	@$(CONTAINER_ENGINE) run \
 	  --rm \
@@ -51,7 +52,7 @@ dev: $(DEV_BUILT)
 	  $(DEV_IMAGE) \
 	  bash
 
-build: $(BASE_BUILT)
+build: $(BASE_BUILT) sync-submodules
 	@echo "==> Building colcon workspace..."
 	@$(CONTAINER_ENGINE) run \
 	  --rm \
@@ -61,7 +62,7 @@ build: $(BASE_BUILT)
 	  $(BASE_IMAGE) \
 	  colcon build --symlink-install
 
-test: $(BASE_BUILT)
+test: $(BASE_BUILT) sync-submodules
 	@echo "==> Testing colcon workspace..."
 	@$(CONTAINER_ENGINE) run \
 	  --rm \
@@ -71,9 +72,9 @@ test: $(BASE_BUILT)
 	  $(BASE_IMAGE) \
 	  colcon test --event-handlers console_cohesion+
 
-final: $(FINAL_BUILT)
+final: $(FINAL_BUILT) sync-submodules
 
-$(BASE_BUILT): $(CONTAINERFILE) $(MAKEFI)
+$(BASE_BUILT): $(CONTAINERFILE)
 	@echo "==> Building base image..."
 	@$(CONTAINER_ENGINE) build \
 		-t $(BASE_IMAGE) \

@@ -10,7 +10,7 @@ This repository is a template for a containerized [ROS 2](https://docs.ros.org/)
 | `make final`             | Builds the colcon workspace and copies the resulting artifacts into a minimal `ros-core` image tagged `{name}:{distro}-final`. |
 | `make refresh`           | Causes the previous set of commands to rebuild the image when run.                                                             |
 | `make clean`             | Untags and removes any installed images.                                                                                       |
-| `make update-submodules` | Recursively updates git submodules.                                                                                            |
+| `make sync-submodules`   | Manually syncs and recursively updates git submodules.                                                                         |
 
 ## Why?
 
@@ -57,7 +57,7 @@ To add source dependencies, use git submodules inside src. For example:
 git submodule add https://github.com/ros2/examples.git src/examples
 ```
 
-You can edit submodules in `.gitmodules` and pin them to specific commits or branches, and refresh them with `make update-submodules`.
+You can edit submodules in `.gitmodules` (full spec [here](https://git-scm.com/docs/gitmodules#_description)), and manually sync them with `make sync-submodules`. By default, all the build commands will ensure the workspace's submodules are synced to `.gitmodules` and updated. If you want to pin submodules to specific versions, you should run `git checkout <commit>` from their directories.
 
 ## Questions and Limitations
 
