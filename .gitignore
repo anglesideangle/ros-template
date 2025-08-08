@@ -15,6 +15,9 @@
 !/src/
 !/src/**
 
+!.github/
+!.github/**
+
 # ignore rosbags
 *.bag
 

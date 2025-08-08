@@ -15,6 +15,9 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Workspace Build
+      run: make update-submodules
+
+    - name: Workspace Build
       run: make build
 
     - name: Final Image
