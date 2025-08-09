@@ -45,6 +45,8 @@ dev: $(DEV_BUILT) sync-submodules
 	  --name=$(REPO_NAME)-dev \
 	  --userns=host \
 	  --network=host \
+	  --pid=host \
+	  --ipc=host \
 	  -e QT_X11_NO_MITSHM=1 \
 	  -e NVIDIA_DRIVER_CAPABILITIES=all \
 	  -e DISPLAY=$$DISPLAY \

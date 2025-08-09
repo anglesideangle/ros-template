@@ -35,15 +35,17 @@ Make commands that rely on a specific image existing (`make build`, `make test`,
 `make dev` will, by default, bridge the following between the host and container:
 
 - `/workspace` volume with rw access
-- host user namespace
 - host network
+- host user namespace
+- host pid namespace
+- host ipc namespace
 - X11
 
 All the commands and syntax used is intended to be compatible with [podman](https://podman.io/), [docker](https://www.docker.com/), or any other OCI complaint container engine.
 
 ## Usage
 
-To set up the template, replace `ROS_DISTRO` and `REPO_NAME` in `Makefile` with your desired distro and project name. If you're using devcontainers, replace `ROS_DISTRO` in `./container/devcontainer.json` as well.
+To set up the template, replace `ROS_DISTRO` and `REPO_NAME` in `Makefile` with your desired distro and project name. If you're using devcontainers, replace `ROS_DISTRO` in `.devcontainer.json` as well.
 
 ### Installing Packages
 
