@@ -1,10 +1,20 @@
-ARG ROS_DISTRO
+# Set up ROS2 container for diesl, and configure Zenoh for the RMW
+ARG ROS_DISTRO=jazzy TAG=latest REG=registry.gitlab.sitcore.net/haiisw/diesl
+
+
+
+###########################################################################
+### BASE IMAGE ###
+###########################################################################
 
 # The base layer only installs dependencies, and does not build any code
 # It installs a full ros environment
-FROM docker.io/osrf/ros:${ROS_DISTRO}-desktop-full AS base
 
-ENV DEBIAN_FRONTEND=noninteractive
+# You can either user the diesl base image or the official ROS base image
+# FROM ${REG}:diesl-base:${TAG} AS base
+FROM ros:${ROS_DISTRO}-ros-base  AS base
+
+ENV DEBIAN_FRONTEND=noninteractive LANG=C.UTF-8 LC_ALL=C.UTF-8 OPAL_PREFIX= ROS_DISTRO=${ROS_DISTRO}
 
 # Install packages
 RUN apt-get update \
@@ -15,32 +25,44 @@ RUN apt-get update \
   git \
   python3-pip \
   pip \
-  python3-rosdep \
+  python3-rosdep \ 
+  wget \
+  unzip \
   ros-${ROS_DISTRO}-ros-gz \
   ros-${ROS_DISTRO}-launch \
   ros-${ROS_DISTRO}-launch-ros \
   ros-${ROS_DISTRO}-ament-cmake \ 
   ros-${ROS_DISTRO}-ament-cmake-core \ 
-  ros-${ROS_DISTRO}-ament-cmake-python
-  # TODO add your dependencies here!
+  ros-${ROS_DISTRO}-ament-cmake-python \
+  # alternative RMW packages:
+  ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+  ros-${ROS_DISTRO}-rmw-zenoh-cpp \
+  # Add additional depencies here as needed, these are for the example
+  ros-jazzy-example-interfaces \
+  ros-jazzy-demo-nodes-cpp \
+  python3-pytest \
+  python3-numpy
 
-# Set up the entrypoint
-RUN cat <<EOF > /entrypoint.bash
-#!/usr/bin/env bash
-source /opt/ros/${ROS_DISTRO}/setup.bash
+ENV RMW_IMPLEMENTATION=rmw_zenoh_cpp ZENOH_ROUTER_CONFIG_URI=/CUSTOM_RMW_ZENOH_ROUTER_CONFIG.json5 ZENOH_SESSION_CONFIG_URI=/CUSTOM_RMW_ZENOH_SESSION_CONFIG.json5
+# expose ports used for Zenoh
+EXPOSE 7447/tcp
+EXPOSE 8000/tcp
+EXPOSE 7447/udp
+EXPOSE 7446/udp
 
-if [ -f /workspace/install/setup.bash ]; then
-  source /workspace/install/setup.bash
-fi
-
-exec "\$@"
-exec bash
-EOF
+COPY root/ /
 
 RUN chmod +x /entrypoint.bash
 ENTRYPOINT [ "/entrypoint.bash" ]
 
-# The build layer (which should probably be renamed), actually builds everything.
+STOPSIGNAL SIGINT
+
+
+###########################################################################
+### BUILD IMAGE ###
+###########################################################################
+
+# Full image with all the functionality, built on top of the base image
 FROM base AS build
 
 # Copy in workspace
@@ -50,19 +72,54 @@ WORKDIR /workspace
 # Actually build package
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && colcon build
 
-# Start from mininal image for final
-FROM docker.io/library/ros:${ROS_DISTRO}-ros-core AS final
+STOPSIGNAL SIGINT
 
-# TODO uncomment this and add runtime dependencies
-# RUN apt-get update \
-#   && apt-get install -y --no-install-recommends \
-#     my-package
-#   && rm -rf /var/lib/apt/lists/*
+###########################################################################
+### FINAL IMAGE ###
+###########################################################################
+
+# Stripped down image with only what is needed to run the code
+FROM ros:${ROS_DISTRO}-ros-core AS final
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+  ros-${ROS_DISTRO}-rmw-zenoh-cpp \
+# Add additional depencies here as needed, these are examples
+  ros-jazzy-example-interfaces \
+  ros-jazzy-demo-nodes-cpp \
+  python3-pytest \
+  python3-numpy \
+  # and clean up apt cache
+  && apt-get autoclean \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /workspace/build /workspace/build
 COPY --from=build /workspace/install /workspace/install
 
-CMD [ "bash" ] # TODO your command here!!
+ENV DEBIAN_FRONTEND=noninteractive LANG=C.UTF-8 LC_ALL=C.UTF-8 OPAL_PREFIX= 
+ENV RMW_IMPLEMENTATION=rmw_zenoh_cpp ZENOH_ROUTER_CONFIG_URI=/DEFAULT_RMW_ZENOH_ROUTER_CONFIG.json5 ZENOH_SESSION_CONFIG_URI=/DEFAULT_RMW_ZENOH_SESSION_CONFIG.json5
+# expose ports used for Zenoh
+EXPOSE 7447/tcp
+EXPOSE 8000/tcp
+EXPOSE 7447/udp
+EXPOSE 7446/udp
+
+COPY root/ /
+
+RUN chmod +x /entrypoint.bash
+ENTRYPOINT [ "/entrypoint.bash" ]
+
+# Example of run command, in this case startng a zenoh router node
+# CMD ["ros2", "run", "rmw_zenoh_cpp", "rmw_zenohd"]
+
+STOPSIGNAL SIGINT
+
+
+
+###########################################################################
+### DEV IMAGE ###
+###########################################################################
 
 # Dev environment with useful tools
 FROM base AS dev

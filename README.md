@@ -1,6 +1,10 @@
 # ros-template
 
-This repository is a template for a containerized [ROS 2](https://docs.ros.org/) project. It uses `make` to implement the following utility commands:
+This repository is a template for a containerized [ROS 2](https://docs.ros.org/) project. 
+
+You should first create a fork of the repository before cloning!  Otherwise its not a very good template
+
+It uses `make` to implement the following utility commands:
 
 | Command                  | Description                                                                                                                    |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -11,6 +15,8 @@ This repository is a template for a containerized [ROS 2](https://docs.ros.org/)
 | `make refresh`           | Causes the previous set of commands to rebuild the image when run.                                                             |
 | `make clean`             | Untags and removes any installed images.                                                                                       |
 | `make sync-submodules`   | Manually syncs and recursively updates git submodules.                                                                         |
+| `make pull`              | pulls all built images from the registry.                                                                                      |
+| `make push`   | Pushes all built images to the registry         
 
 ## Why?
 
@@ -90,3 +96,13 @@ If this again bothers you, both nix and pixi (the tool that robostack is based o
 > It sounds like you really dislike containers and container based development. Why did you make this?
 
 This template only depends on a container engine, git, and make. These, unlike nix or pixi/conda, are tools almost everyone, regardless of their os, has installed on their system. Perhaps one day things may be different, but until then, I am but a servant to network effects.
+
+# Whats new?
+
+I made a few changes to the original template.  First, the example is just built in instead of being a submodule which makes it easier to both install and remove.  Additionally, I made changes to include a shared '.env' file for setting environment variables which are shared between the container and make file.  I also added an example compose file, and changes to the entrypoint to be a copied root directory for any additional configs that are needed, and changed the base contianer file to include the zenoh RMW.  Finally, added push and pull commands for pushing built images to an image registry.  
+
+# Credit
+
+Original tempalte by anglesideangle from https://github.com/anglesideangle/ros-template.git
+Also, would like to acknowledge Nathan Hahn for zenoh setup which is what I used for a basis.
+
