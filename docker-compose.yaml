@@ -1,0 +1,78 @@
+
+######
+# Example compose file for the ROS2 Zenoh Router
+######
+### Based on compose file by Nathan Hahn, 2024
+
+networks:
+  ros2:
+    name: ros2br
+    driver: 'bridge'
+    enable_ipv6: true
+    external: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 255.255.255.0/16
+          ip_range: 192.168.1.0/24
+          gateway: 192.168.1.0
+    driver_opts:
+      com.docker.network.bridge.name: ros2br
+      # com.docker.network.bridge.mtu: 65536
+      com.docker.network.container_iface_prefix: ros2br
+      #com.docker.network.bridge.gateway_mode_ipv6: routed
+
+#### If building this multiplatform on windows, you need this: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes -c yes 
+configs:
+  DEFAULT_RMW_ZENOH_ROUTER_CONFIG.json5:
+    file: /CUSTOM_RMW_ZENOH_ROUTER_CONFIG.json5
+  DEFAULT_RMW_ZENOH_SESSION_CONFIG.json5:
+    file: /DIESL_RMW_ZENOH_SESSION_CONFIG.json5
+  cyclonedds_config:
+    file: /cyclonedds.xml
+
+services:
+  zenoh-router:
+    image: ${REG}/${REPO_NAME}:${TAG:-latest}
+    build:
+      context: ./
+      target: final
+      dockerfile: Containerfile
+      args:
+        TAG: ${TAG:-latest}
+        REG: ${REG}
+      cache_from:
+        - ${CACHE:-${REG}/${REPO_NAME}:cache-amd64
+        - ${CACHE:-${REG}/${REPO_NAME}:cache-arm64
+      cache_to:
+        - type=registry,ref=${REG}/${REPO_NAME}:cache-amd64
+        - type=registry,ref=${REG}/${REPO_NAME}:cache-arm64
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    environment:
+      - ROS_ROBOT_ID=${ROS_ROBOT_ID:--1}
+      - ROS_NAMESPACE=${ROS_NAMESPACE:-${ROS_ROBOT_ID:+r$ROS_ROBOT_ID}}
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-11}
+      - UHLC_MAX_DELTA_MS=3000    
+    # devices:
+    #   - "/dev/ttyUSB0:/dev/ttyUSB0" # Maps host /dev/ttyUSB0 to container /dev/ttyUSB0
+    ipc: shareable
+    restart: unless-stopped
+    env_file:
+    - path: .env
+      required: true
+    configs:
+      - DEFAULT_RMW_ZENOH_ROUTER_CONFIG.json5
+      - DEFAULT_RMW_ZENOH_SESSION_CONFIG.json5
+    shm_size: 256mb
+    network_mode: host
+    # volumes:
+    #   - ./launch:/launch
+    ports:
+    - "7447:7448:8000/tcp"
+    - "7446/udp"
+    # Launches the zenoh router with the default configuration
+    command: ["ros2", "run", "rmw_zenoh_cpp", "rmw_zenohd"]
+    deploy:
+      mode: global

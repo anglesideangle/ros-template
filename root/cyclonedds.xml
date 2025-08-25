@@ -1,0 +1,13 @@
+<CycloneDDS>
+   <Domain id="any">
+     <General>
+        <Interfaces>
+          <NetworkInterface name="ros2br" />
+        </Interfaces>
+    </General>
+    <SharedMemory>
+        <Enable>true</Enable>
+        <LogLevel>error</LogLevel>
+    </SharedMemory>
+   </Domain>
+</CycloneDDS>

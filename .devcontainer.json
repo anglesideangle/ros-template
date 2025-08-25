@@ -3,16 +3,15 @@
   "build": {
       "dockerfile": "Containerfile",
       "target": "dev",
-      "context": ".",
-      "args": {
-          "ROS_DISTRO": "kilted",
-      }
+      "context": "."
   },
   "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
   "mounts": [],
   "runArgs": [
-      "--net=host"
+      "--net=host",
+      "--env-file",
+        "${localWorkspaceFolder}/.env" // Adjust path as needed
   ],
   "containerEnv": {
       "SHELL": "/bin/bash"

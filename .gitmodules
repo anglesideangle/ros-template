@@ -1,4 +1,4 @@
-[submodule "src/examples"]
-	path = src/examples
+[submodule "src/example"]
+	path = src/example
 	url = https://github.com/ros2/examples.git
-	branch = kilted
+	branch = jazzy

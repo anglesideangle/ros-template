@@ -7,7 +7,10 @@
 !Containerfile
 !.devcontainer.json
 !README.md
-
+!docker-compose.yaml
+!.env
+!/root
+!/root/**
 !/container/
 !/container/**
 !/linux/
