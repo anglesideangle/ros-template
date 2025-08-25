@@ -9,8 +9,8 @@
 !README.md
 !docker-compose.yaml
 !.env
-!/root/
-!/root/** */
+!/root
+!/root/**
 !/container/
 !/container/**
 !/linux/
