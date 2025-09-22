@@ -49,7 +49,7 @@ dev: $(DEV_BUILT) sync-submodules
 	  --ipc=host \
 	  -e QT_X11_NO_MITSHM=1 \
 	  -e NVIDIA_DRIVER_CAPABILITIES=all \
-	  -e DISPLAY=$$DISPLAY \
+	  -e DISPLAY=$(DISPLAY) \
 	  --volume=/tmp/.X11-unix:/tmp/.X11-unix:rw \
 	  $(DEV_IMAGE) \
 	  bash
